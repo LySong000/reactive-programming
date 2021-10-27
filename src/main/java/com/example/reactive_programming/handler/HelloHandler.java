@@ -4,12 +4,23 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+
+import java.time.Duration;
+
+import static org.springframework.web.reactive.function.server.ServerResponse.ok;
 
 @Component
 public class HelloHandler {
 
     public Mono<ServerResponse> hello(ServerRequest serverRequest) {
-        return ServerResponse.ok().contentType(MediaType.TEXT_PLAIN).body(Mono.just("Hello Reacotive Programming"), String.class);
+        return ok().contentType(MediaType.TEXT_PLAIN).body(Mono.just("Hello Reacotive Programming"), String.class);
+    }
+
+    public Mono<ServerResponse> helloSecond(ServerRequest serverRequest) {
+        return ok().contentType(MediaType.TEXT_EVENT_STREAM).body(
+                Flux.interval(Duration.ofSeconds(1))
+                        .map(item -> "Hello Reacotive Programming" + item), String.class);
     }
 }

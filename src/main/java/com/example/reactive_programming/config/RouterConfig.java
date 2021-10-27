@@ -18,7 +18,8 @@ public class RouterConfig {
 
     @Bean
     public RouterFunction<ServerResponse> helloRouter(){
-        return route(GET("/hello"), request -> helloHandler.hello(request));
+        return route(GET("/hello"), helloHandler::hello)
+                .andRoute(GET("/hello/second"), helloHandler::helloSecond);
     }
 
 }
