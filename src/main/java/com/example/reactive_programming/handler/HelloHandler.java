@@ -6,6 +6,7 @@ import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import reactor.core.scheduler.Schedulers;
 
 import java.time.Duration;
 
@@ -19,8 +20,8 @@ public class HelloHandler {
     }
 
     public Mono<ServerResponse> helloSecond(ServerRequest serverRequest) {
-        return ok().contentType(MediaType.TEXT_EVENT_STREAM).body(
-                Flux.interval(Duration.ofSeconds(1))
+        return ok().contentType(MediaType.TEXT_PLAIN).body(
+                Flux.interval(Duration.ofSeconds(1)).parallel().runOn(Schedulers.parallel())
                         .map(item -> "Hello Reacotive Programming" + item), String.class);
     }
 }
