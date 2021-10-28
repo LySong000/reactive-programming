@@ -58,15 +58,15 @@ class ReactiveProgrammingApplicationTests {
 
     @Test
     void test_generate_subscribe_on() throws InterruptedException {
-        ParallelFlux<Object> characterFlux = Flux.generate(sink -> {
+        Flux<Object> characterFlux = Flux.generate(sink -> {
             try {
-                Thread.sleep(3000);
+                Thread.sleep(2000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
             System.out.println(Thread.currentThread().getName());
             sink.next("hello");
-        }).parallel().runOn(Schedulers.parallel());
+        });
         System.out.println("hi after create");
         characterFlux.log().subscribe(x -> {
             System.out.println(Thread.currentThread().getName());
@@ -80,8 +80,7 @@ class ReactiveProgrammingApplicationTests {
     void test_delay() throws InterruptedException {
         Flux<String> characterFlux = Flux
                 .just("Garfield", "Kojak", "Barbossa")
-                .delayElements(Duration.ofMillis(5000));
-
+                .delaySubscription(Duration.ofMillis(500));
         characterFlux.log().subscribe(x -> {
             System.out.println(Thread.currentThread().getName());
             System.out.println(x);
