@@ -3,6 +3,7 @@ package com.example.reactive_programming;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.FluxSink;
 import reactor.core.publisher.ParallelFlux;
 import reactor.core.scheduler.Schedulers;
 
@@ -86,5 +87,24 @@ class ReactiveProgrammingApplicationTests {
             System.out.println(x);
         });
         System.out.println("hello~");
+    }
+
+    @Test
+    void test_run_on(){
+        ParallelFlux<Object> objectParallelFlux = Flux.create(this::initNumber).parallel().runOn(Schedulers.parallel());
+        objectParallelFlux.subscribe(System.out::println);
+    }
+
+    @Test
+    void test_publish_on_create() {
+        Flux<Object> objectFlux = Flux.create(this::initNumber).publishOn(Schedulers.parallel());
+        objectFlux.subscribe(System.out::println);
+    }
+
+    void initNumber(FluxSink<Object> fluxSink) {
+        for (int i = 0; i < 100; i++) {
+            fluxSink.next(i);
+        }
+        fluxSink.complete();
     }
 }
