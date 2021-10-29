@@ -3,6 +3,7 @@ package com.example.reactive_programming.controller;
 import com.example.reactive_programming.entity.User;
 import com.example.reactive_programming.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -13,6 +14,8 @@ import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
+
+import java.time.Duration;
 
 @RestController
 @RequestMapping("/users")
@@ -51,9 +54,9 @@ public class UserController {
         return userService.deleteByUsername(username);
     }
 
-    @GetMapping
+    @GetMapping(produces = MediaType.APPLICATION_NDJSON_VALUE)
     public Flux<User> findAll() {
-        return userService.findAll();
+        return userService.findAll().delayElements(Duration.ofMillis(1000));
     }
 
     public void runIt(Flux<Object> characterFlux) {
